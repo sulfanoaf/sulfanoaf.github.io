@@ -1,0 +1,27 @@
+img {
+  width: 100%;
+}
+
+
+.box {
+	width: 100%;
+	border: solid 2px #efeeee;
+	border-radius: 1px;
+	box-shadow: none;
+	padding: 2px;
+	background-color: color($colors, white)
+}
+.box-content {
+	width: 100%;
+	padding-top: 100%;
+	position: relative;
+	margin-bottom: 5px;
+}
+.box-img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	object-fit: contain;
+	height: 100% !important;
+	width: 100% !important;
+}
