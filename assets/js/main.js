@@ -1,301 +1,302 @@
-(function ($)
-  { "use strict"
-  
-/* 1. Proloder */
-    $(window).on('load', function () {
-      $('#preloader-active').delay(450).fadeOut('slow');
-      $('body').delay(450).css({
-        'overflow': 'visible'
-      });
-    });
 
 
-/* 2. slick Nav */
-// mobile_menu
-    var menu = $('ul#navigation');
-    if(menu.length){
-      menu.slicknav({
-        prependTo: ".mobile_menu",
-        closedSymbol: '+',
-        openedSymbol:'-'
-      });
-    };
+(function($) {
 
+	skel.breakpoints({
+		xlarge: '(max-width: 1680px)',
+		large: '(max-width: 1280px)',
+		medium: '(max-width: 1024px)',
+		small: '(max-width: 736px)',
+		xsmall: '(max-width: 480px)'
+	});
 
-/* 3. MainSlider-1 */
-    function mainSlider() {
-      var BasicSlider = $('.slider-active');
-      BasicSlider.on('init', function (e, slick) {
-        var $firstAnimatingElements = $('.single-slider:first-child').find('[data-animation]');
-        doAnimations($firstAnimatingElements);
-      });
-      BasicSlider.on('beforeChange', function (e, slick, currentSlide, nextSlide) {
-        var $animatingElements = $('.single-slider[data-slick-index="' + nextSlide + '"]').find('[data-animation]');
-        doAnimations($animatingElements);
-      });
-      BasicSlider.slick({
-        autoplay: true,
-        autoplaySpeed: 6000,
-        dots: false,
-        fade: true,
-        arrows: false,
-        prevArrow: '<button type="button" class="slick-prev"><i class="ti-shift-left"></i></button>',
-        nextArrow: '<button type="button" class="slick-next"><i class="ti-shift-right"></i></button>',
-        responsive: [{
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              infinite: true,
-            }
-          },
-          {
-            breakpoint: 991,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows: false
-            }
-          },
-          {
-            breakpoint: 767,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows: false
-            }
-          }
-        ]
-      });
+	$(function() {
 
-      function doAnimations(elements) {
-        var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        elements.each(function () {
-          var $this = $(this);
-          var $animationDelay = $this.data('delay');
-          var $animationType = 'animated ' + $this.data('animation');
-          $this.css({
-            'animation-delay': $animationDelay,
-            '-webkit-animation-delay': $animationDelay
-          });
-          $this.addClass($animationType).one(animationEndEvents, function () {
-            $this.removeClass($animationType);
-          });
-        });
-      }
-    }
-    mainSlider();
+		var $body = $('body'),
+			$header = $('#header'),
+			$nav = $('#nav'), $nav_a = $nav.find('a'),
+			$wrapper = $('#wrapper');
 
+		// Fix: Placeholder polyfill.
+			$('form').placeholder();
 
+		// Prioritize "important" elements on medium.
+			skel.on('+medium -medium', function() {
+				$.prioritize(
+					'.important\\28 medium\\29',
+					skel.breakpoint('medium').active
+				);
+			});
 
-/* 4. Testimonial Active*/
-  var testimonial = $('.h1-testimonial-active');
-    if(testimonial.length){
-    testimonial.slick({
-        dots: false,
-        infinite: true,
-        speed: 1000,
-        autoplay:true,
-        loop:true,
-        arrows: false,
-        prevArrow: '<button type="button" class="slick-prev"><i class="ti-angle-left"></i></button>',
-        nextArrow: '<button type="button" class="slick-next"><i class="ti-angle-right"></i></button>',
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        responsive: [
-          {
-            breakpoint: 1024,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              infinite: true,
-              dots: false,
-              arrow:false
-            }
-          },
-          {
-            breakpoint: 600,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows:false
-            }
-          },
-          {
-            breakpoint: 480,
-            settings: {
-              slidesToShow: 1,
-              slidesToScroll: 1,
-              arrows:false,
-            }
-          }
-        ]
-      });
-    }
+		// Header.
+			var ids = [];
 
+			// Set up nav items.
+				$nav_a
+					.scrolly({ offset: 44 })
+					.on('click', function(event) {
 
-/* 5. Gallery Active */
-    var client_list = $('.gallery-active');
-    if(client_list.length){
-      client_list.owlCarousel({
-        slidesToShow: 8,
-        slidesToScroll: 1,
-        loop: true,
-        autoplay:true,
-        speed: 3000,
-        smartSpeed:2000,
-        nav: false,
-        dots: false,
-        margin: 0,
+						var $this = $(this),
+							href = $this.attr('href');
 
-        autoplayHoverPause: true,
-        responsive : {
-          0 : {
-            nav: false,
-            items: 2,
-          },
-          768 : {
-            nav: false,
-            items: 8,
-          }
-        }
-      });
-    }
+						// Not an internal link? Bail.
+							if (href.charAt(0) != '#')
+								return;
 
-/* 6. Nice Selectorp  */
-  var nice_Select = $('select');
-    if(nice_Select.length){
-      nice_Select.niceSelect();
-    }
+						// Prevent default behavior.
+							event.preventDefault();
 
-/* 7.  Custom Sticky Menu  */
-    $(window).on('scroll', function () {
-      var scroll = $(window).scrollTop();
-      if (scroll < 245) {
-        $(".header-sticky").removeClass("sticky-bar");
-      } else {
-        $(".header-sticky").addClass("sticky-bar");
-      }
-    });
+						// Remove active class from all links and mark them as locked (so scrollzer leaves them alone).
+							$nav_a
+								.removeClass('active')
+								.addClass('scrollzer-locked');
 
-    $(window).on('scroll', function () {
-      var scroll = $(window).scrollTop();
-      if (scroll < 245) {
-          $(".header-sticky").removeClass("sticky");
-      } else {
-          $(".header-sticky").addClass("sticky");
-      }
-    });
+						// Set active class on this link.
+							$this.addClass('active');
 
+					})
+					.each(function() {
 
+						var $this = $(this),
+							href = $this.attr('href'),
+							id;
 
-/* 8. sildeBar scroll */
-    $.scrollUp({
-      scrollName: 'scrollUp', // Element ID
-      topDistance: '300', // Distance from top before showing element (px)
-      topSpeed: 300, // Speed back to top (ms)
-      animation: 'fade', // Fade, slide, none
-      animationInSpeed: 200, // Animation in speed (ms)
-      animationOutSpeed: 200, // Animation out speed (ms)
-      scrollText: '<i class="ti-arrow-up"></i>', // Text for element
-      activeOverlay: false, // Set CSS color to display scrollUp active point, e.g '#00FFFF'
-    });
+						// Not an internal link? Bail.
+							if (href.charAt(0) != '#')
+								return;
 
+						// Add to scrollzer ID list.
+							id = href.substring(1);
+							$this.attr('id', id + '-link');
+							ids.push(id);
 
-/* 9. data-background */
-    $("[data-background]").each(function () {
-      $(this).css("background-image", "url(" + $(this).attr("data-background") + ")")
-      });
+					});
 
+			// Initialize scrollzer.
+				$.scrollzer(ids, { pad: 300, lastHack: true });
 
-/* 10. WOW active */
-    new WOW().init();
+		// Off-Canvas Navigation.
 
-/* 11. Datepicker */
-    
-// 11. ---- Mailchimp js --------//  
-    function mailChimp() {
-      $('#mc_embed_signup').find('form').ajaxChimp();
-    }
-    mailChimp();
+			// Title Bar.
+				$(
+					'<div id="titleBar">' +
+						'<a href="#header" class="toggle"></a>' +
+						'<span class="title">' + $('#logo').html() + '</span>' +
+					'</div>'
+				)
+					.appendTo($body);
 
+			// Header.
+				$('#header')
+					.panel({
+						delay: 500,
+						hideOnClick: true,
+						hideOnSwipe: true,
+						resetScroll: true,
+						resetForms: true,
+						side: 'right',
+						target: $body,
+						visibleClass: 'header-visible'
+					});
 
-// 12 Pop Up Img
-    var popUp = $('.single_gallery_part, .img-pop-up');
-      if(popUp.length){
-        popUp.magnificPopup({
-          type: 'image',
-          gallery:{
-            enabled:true
-          }
-        });
-      }
-      
-/* 14. counterUp*/
-    $('.counter').counterUp({
-      delay: 10,
-      time: 3000
-    });
+			// Fix: Remove navPanel transitions on WP<10 (poor/buggy performance).
+				if (skel.vars.os == 'wp' && skel.vars.osVersion < 10)
+					$('#titleBar, #header, #wrapper')
+						.css('transition', 'none');
 
-  //Another popUp     
-        var popUp = $('.menorie-icon');
-        if(popUp.length){
-          popUp.magnificPopup({
-            type: 'image',
-            gallery:{
-              enabled:true
-            }
-          });
-        }
-  // 
-
-//Brand Active
-  $('.brand-active').slick({
-    dots: false,
-    infinite: true,
-    speed: 300,
-    autoplay:true,
-    speed: 1000,
-    arrows: false,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: false,
-        }
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2
-        }
-      },
-      {
-        breakpoint: 991,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-      // You can unslick at a given breakpoint now by adding:
-      // settings: "unslick"
-      // instead of a settings object
-    ]
-  });
-
+	});
 
 
 })(jQuery);
+
+//color picker
+var colorPicker = (function() {
+	var config = {
+		baseColors: [
+			[46, 204, 113],
+			[52, 152, 219],
+			[155, 89, 182],
+			[231, 76, 60],
+			[247, 71, 112]
+		],
+		lightModifier: 20,
+		darkModifier: 0,
+		transitionDuration: 200,
+		transitionDelay: 25,
+		variationTotal: 6
+	};
+
+	var state = {
+		activeColor: [0, 0, 0]
+	};
+
+	function init() {
+		createColorPicker(function() {
+			appendBaseColors();
+		});
+
+		addEventListeners();
+
+		setFirstColorActive(function() {
+			setFirstModifiedColorActive();
+		});
+	}
+
+	function setActiveBaseColor(el) {
+		$(".color.active").removeClass("active");
+		el.addClass("active");
+	}
+
+	function setActiveColor(el) {
+		$(".color-var.active").removeClass("active");
+		el.addClass("active");
+		state.activeColor = el.data("color").split(",");
+	}
+
+	function addEventListeners() {
+		$("body").on("click", ".color", function() {
+			var color = $(this).data("color").split(",");
+			setActiveBaseColor($(this));
+
+			hideVariations(function() {
+				createVariations(color, function() {
+					setDelays(function() {
+						showVariations();
+					});
+				});
+			});
+		});
+
+		$("body").on("click", ".color-var", function() {
+			setActiveColor($(this));
+			setBackgroundColor();
+		});
+	}
+
+	function setFirstColorActive(callback) {
+		$(".color").eq(1).trigger("click");
+		callback();
+	}
+
+	function setFirstModifiedColorActive() {
+		setTimeout(function() {
+			$(".color-var").eq(7).trigger("click");
+		}, 500);
+	}
+
+	function createColorPicker(callback) {
+		$(".color-picker").append('<div class="base-colors"></div>');
+		$(".color-picker").append('<div class="varied-colors"></div>');
+		$(".color-picker").append('<div class="active-color"></div>');
+		$(".color-picker").append('<div class="color-history"></div>');
+
+		callback();
+	}
+
+	function appendBaseColors() {
+		for (i = 0; i < config.baseColors.length; i++) {
+			$(".base-colors").append(
+				'<div class="color" data-color="' +
+					config.baseColors[i].join() +
+					'" style="background-color: rgb(' +
+					config.baseColors[i].join() +
+					');"></div>'
+			);
+		}
+	}
+
+	function setBackgroundColor() {
+		$("#header").css({
+			"background-color": "rgb(" + state.activeColor + ")"
+		});
+		$("#titleBar").css({
+			"background": "rgb(" + state.activeColor + ")"
+		});
+
+		$("ul.feature-icons li:before").css({
+			"background-color": "rgb(" + state.activeColor + ")"
+		});		
+		$("#header > nav ul li a.active").css({
+			"color": "rgb(" + state.activeColor + ")"
+		});
+		$("a.icon:hover").css({
+		    "border-bottom-color": "rgb(" + state.activeColor + ")",
+		    "color": "rgb(" + state.activeColor + ")",
+		    "border-color": "rgb(" + state.activeColor + ")"
+		});
+		$(".devicon-list li i:hover").css({
+			"color": "rgb(" + state.activeColor + ")"
+		});
+        $(".mfb-component__button--child").css({
+			"background-color": "rgb(" + state.activeColor + ")"
+		});
+        $(".mfb-component__button--main").css({
+			"background-color": "rgb(" + state.activeColor + ")"
+		});
+	}
+
+	function createVariations(color, callback) {
+		$(".varied-colors").html("");
+
+		for (var i = 0; i < config.variationTotal; i++) {
+			var newColor = [];
+
+			for (var x = 0; x < color.length; x++) {
+				var modifiedColor = Number(color[x]) - 100 + config.lightModifier * i;
+
+				if (modifiedColor <= 0) {
+					modifiedColor = 0;
+				} else if (modifiedColor >= 255) {
+					modifiedColor = 255;
+				}
+
+				newColor.push(modifiedColor);
+			}
+
+			$(".varied-colors").append(
+				'<div data-color="' +
+					newColor +
+					'" class="color-var" style="background-color: rgb(' +
+					newColor +
+					');"></div>'
+			);
+		}
+
+		callback();
+	}
+
+	function setDelays(callback) {
+		$(".color-var").each(function(x) {
+			$(this).css({
+				transition:
+					"transform " +
+						config.transitionDuration / 1000 +
+						"s " +
+						config.transitionDelay / 1000 * x +
+						"s"
+			});
+		});
+
+		callback();
+	}
+
+	function showVariations() {
+		setTimeout(function() {
+			$(".color-var").addClass("visible");
+		}, config.transitionDelay * config.variationTotal);
+	}
+
+	function hideVariations(callback) {
+		$(".color-var").removeClass("visible").removeClass("active");
+
+		setTimeout(function() {
+			callback();
+		}, config.transitionDelay * config.variationTotal);
+	}
+
+	return {
+		init: init
+	};
+})();
+
+colorPicker.init();
