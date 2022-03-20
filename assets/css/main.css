@@ -989,7 +989,7 @@ l.  Social Handles
 		-ms-justify-content: space-between;
 		justify-content: space-between;
 		/*background: linear-gradient(150deg,#4b0966,#f96c8d);*/
-		background-color: #4b0966;
+		background-color: black;
 		color: #d1f1e9;
 		height: 100%;
 		overflow-y: auto;
@@ -1146,7 +1146,7 @@ l.  Social Handles
 		background-position: top right;
 		background-repeat: no-repeat;
 		background-size: cover; 
-		background: linear-gradient(126deg, #c31432, #240b36);
+		background: linear-gradient(126deg, #414141, #000000);
         background-size: 400% 400%;
 
         -webkit-animation: header-gradient-anim 5s ease infinite;
@@ -1408,7 +1408,7 @@ l.  Social Handles
 				top: 0;
 				width: 100%;
 				z-index: 10001;
-				background: #4b0966;
+				background: #000;
 				color: #ffffff;
 				min-width: 320px;
 			}
